@@ -27,7 +27,7 @@ const io = require('socket.io')(http, {
 
 let connected = [];
 io.on('connect', (socket) => {
-  connected.push(socket.id);
+  // connected.push(socket.id);
   io.emit('client_connect', connected);
 
   socket.on('disconnect', (data) => {
@@ -39,10 +39,18 @@ io.on('connect', (socket) => {
 
   socket.on('chat', (data) => {
     io.emit('chat', {
-      id: socket.id,
+      name: socket.name,
       message: data
     });
   })
+
+  socket.on('send-name', (data) => {
+    console.log(data);
+    socket.name = data;
+    connected.push(socket.name);
+    socket.emit('switch-chat')
+  })
+  
 });
 
 module.exports = app;
